@@ -33,6 +33,10 @@ func New(apikey string) *Handler {
 	}
 }
 
+func (h *Handler) ClearCache() {
+	h.lastGet = time.Time{}
+}
+
 func (h *Handler) Get() (Nest, error) {
 	if h.lastGet.Add(1 * time.Minute).After(time.Now()) {
 		log.Printf("reusing value")
