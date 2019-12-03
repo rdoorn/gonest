@@ -50,10 +50,10 @@ func (h *Handler) ClearCache() {
 
 func (h *Handler) Get() (Nest, error) {
 	if h.lastGet.Add(1 * time.Minute).After(time.Now()) {
-		log.Printf("reusing value")
+		log.Printf("nest: using cached values")
 		return h.nest, nil
 	}
-	log.Printf("new requeset")
+	log.Printf("nest: calling api for new values")
 
 	req, _ := http.NewRequest("GET", h.apiURL, nil)
 
@@ -69,7 +69,6 @@ func (h *Handler) Get() (Nest, error) {
 		return nil
 	}
 
-	log.Printf("req: %+v", req)
 	res, err := client.Do(req)
 	if err != nil {
 		return h.nest, err
@@ -78,7 +77,7 @@ func (h *Handler) Get() (Nest, error) {
 	defer res.Body.Close()
 
 	json.NewDecoder(res.Body).Decode(&h.nest)
-	log.Printf("Nest: %+v", h.nest)
+	log.Printf("nest: GET body response from api: %v", h.nest)
 	h.lastGet = time.Now()
 	return h.nest, nil
 }
@@ -97,7 +96,6 @@ func (h *Handler) Set(path, data string) error {
 		return nil
 	}
 
-	log.Printf("req: %+v", req)
 	res, err := client.Do(req)
 	if err != nil {
 		return err
@@ -105,7 +103,7 @@ func (h *Handler) Set(path, data string) error {
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
-	log.Printf("result: %s", body)
+	log.Printf("nest: PUT body response from api: %v", body)
 
 	return nil
 }
