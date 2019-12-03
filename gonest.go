@@ -36,6 +36,8 @@ func New() *Handler {
 		panic("missing environment key: NEST_API_KEY")
 	}
 
+	log.Printf("NEST_API_KEY: %s*****", nestAPIKey[0:5])
+
 	return &Handler{
 		apiKey: nestAPIKey,
 		apiURL: apiURL,
