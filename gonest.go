@@ -6,8 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type Handler struct {
@@ -15,6 +18,7 @@ type Handler struct {
 	apiURL  string
 	lastGet time.Time
 	nest    Nest
+	mqtt    mqtt.Client
 }
 
 type Nest struct {
@@ -26,9 +30,14 @@ var (
 	apiURL = "https://developer-api.nest.com/"
 )
 
-func New(apikey string) *Handler {
+func New() *Handler {
+	nestAPIKey, ok := os.LookupEnv("NEST_API_KEY")
+	if !ok {
+		panic("missing environment key: NEST_API_KEY")
+	}
+
 	return &Handler{
-		apiKey: apikey,
+		apiKey: nestAPIKey,
 		apiURL: apiURL,
 	}
 }
