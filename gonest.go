@@ -77,7 +77,7 @@ func (h *Handler) Get() (Nest, error) {
 	defer res.Body.Close()
 
 	json.NewDecoder(res.Body).Decode(&h.nest)
-	log.Printf("nest: GET body response from api: %v", h.nest)
+	log.Printf("nest: GET body response from api: %+v", h.nest)
 	h.lastGet = time.Now()
 	return h.nest, nil
 }
